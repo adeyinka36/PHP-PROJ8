@@ -56,6 +56,7 @@ function changePassword($currentPassword,$newPassword){
     global $host;
 
     $username= revealCookies("auth-username");
+    
     $new=password_hash($newPassword,PASSWORD_DEFAULT);
 
     try{
@@ -65,6 +66,8 @@ function changePassword($currentPassword,$newPassword){
        $result=$stmt->fetch();
        $oldPassword=$result["password"];
        if(!password_verify($currentPassword,$oldPassword)){
+           var_dump($username);
+           die();
         redirect($host."/account.php");
        
         $session->addFlashBag()->add("error","Incorrect Password");
@@ -73,7 +76,7 @@ function changePassword($currentPassword,$newPassword){
 
     }catch(Exception $e){
         echo $e->getMessage();
-        die();
+       
         redirect($host."/account.php");
         $session->addFlashBag()->add("error","Incorrect Password");
         return false;
@@ -88,7 +91,7 @@ function changePassword($currentPassword,$newPassword){
     }
     catch(Exception $e){
        echo "error updating password:".$e->getMessage();
-       die();
+      
        $session->getFlashBag()->add("error","Error changing password");
     redirect($host."/account.php");
     return false;
@@ -124,13 +127,25 @@ function createCookie($data,$expiraton){
 
 
 function revealCookies($prop=null){
-    
-    $cookie=json_decode(request()->cookies->get("auth"));
+    Firebase\JWT\JWT::$leeway=1;
+    try{
+    $cookie= Firebase\JWT\JWT::decode(
+        request()->cookies->get("auth"),
+        getenv("SECRET_JWT"),
+        ["HS256"]
+    );
+}catch(Exception $e){
+    return false;
+}
     if(!$prop){
     return $cookie;
+    }
+    if($prop=="auth-userid"){
+        $prop="sub";
     }
     if(!isset($cookie->$prop)){
         return false;
     }
+
     return $cookie->$prop;
 }

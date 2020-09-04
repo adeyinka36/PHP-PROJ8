@@ -19,6 +19,7 @@ if($password!=$confirmPassord){
 
 $user= findUserByUsername($username);
 
+
 if(!empty($user)){
     $session->getFlashBag()->add("error","This user already exists");
     redirect($host.'/register.php');
@@ -31,17 +32,34 @@ $session->getFlashBag()->add("sucess","User is created");
 
 //auto-login 
    $newUser= findUserByUsername($username);
-   
+  
+   $time= time()+36000;
+   $jwt= Firebase\JWT\JWT::encode([
+       "iss"=>request()->getBaseUrl(),
+       "sub"=>$newUser['user_id'],
+       "exp"=>$time,
+       "iat"=>time(),
+       "nbf"=>time(),
+       "auth-username"=>$username
+   ],
+   getenv("SECRET_JWT"),
+   "HS256");
+  
 
-    $data=[
-        "auth-username"=>$newUser["username"],
-        "auth-userid"=>$newUser["user_id"]
-    ];
+   
+   
+   $cookie= createCookie($jwt,$time);
+
+
+    // $data=[
+    //     "auth-username"=>$newUser["username"],
+    //     "auth-userid"=>$newUser["user_id"]
+    // ];
 
 
     
-    $time= time()+36000;
-    $cookie= createCookie(json_encode($data),$time);
+    // $time= time()+36000;
+    // $cookie= createCookie(json_encode($data),$time);
 
    
 

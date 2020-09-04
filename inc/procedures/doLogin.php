@@ -19,17 +19,26 @@ if(empty($user)){
 
 if(password_verify($password,$user["password"])){
    
-   
-    
-    $data=[
-        "auth-username"=>$user["username"],
-        "auth-userid"=>$user["user_id"]
-    ];
-
-
-    
     $time= time()+36000;
-    $cookie= createCookie(json_encode($data),$time);
+    $jwt= Firebase\JWT\JWT::encode([
+        "iss"=>request()->getBaseUrl(),
+        "sub"=>$user['user_id'],
+        "exp"=>$time,
+        "iat"=>time(),
+        "nbf"=>time(),
+        "auth-username"=>$username
+    ],
+    getenv("SECRET_JWT"),
+    "HS256");
+    // $data=[
+    //     "auth-username"=>$user["username"],
+    //     "auth-userid"=>$user["user_id"]
+    // ];
+
+
+    
+    // $time= time()+36000;
+    $cookie= createCookie($jwt,$time);
 
    
 
