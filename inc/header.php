@@ -48,6 +48,7 @@
   <?php 
   require_once 'bootstrap.php';
   $authenticated=checkAuth();
+  
   ?>
     <div class="col-container">
   		<h1>
@@ -64,13 +65,15 @@
         <ul class="nav">
             <li class="nav-item task<?php if ($page == "account") { echo " on"; } ?>"><a class="nav-link" href=<?php echo getenv('APP_URL')."/account.php"?>>My Account</a></li>
            
+            <?php if($authenticated){  ?>
              <li class="nav-item tasks"><a class="nav-link" href=<?php echo getenv('APP_URL')."/inc/procedures/doLogout.php"?>>Logout</a></li>
+             <?php };?>
              
-             <?php if ($authenticated) :?>
+             <?php if(!$authenticated){  ?>
             <li class="nav-item tasks<?php if ($page == "login") { echo " on"; } ?>"><a class="nav-link" href=<?php echo getenv('APP_URL')."/login.php"?>>Login</a></li>
            
             <li class="nav-item tasks<?php if ($page == "register") { echo " on"; } ?>"><a class="nav-link" href=<?php echo getenv('APP_URL')."/register.php"?>>Register</a></li>
-            <?php endif ;?>
+             <?php };?>
         </ul>
     </div>
   </header>

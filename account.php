@@ -2,7 +2,8 @@
 require_once 'inc/bootstrap.php';
 
 $authenticated=checkAuth();
-if(!$authenticatedauthenti){
+
+if(!$authenticated){
     redirect('login.php');
 }
 

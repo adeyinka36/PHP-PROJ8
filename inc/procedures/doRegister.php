@@ -28,4 +28,26 @@ if(!empty($user)){
 $hash= password_hash($password,PASSWORD_DEFAULT);
 $user=createUser($username,$hash);
 $session->getFlashBag()->add("sucess","User is created");
-redirect($host.'/');
+
+//auto-login 
+   $newUser= findUserByUsername($username);
+   
+
+    $data=[
+        "auth-username"=>$newUser["username"],
+        "auth-userid"=>$newUser["user_id"]
+    ];
+
+
+    
+    $time= time()+36000;
+    $cookie= createCookie(json_encode($data),$time);
+
+   
+
+
+
+    $session->getFlashBag()->add("success","You are now logged in");
+    
+    redirect($host.'/',["cookies"=>[$cookie]]);
+

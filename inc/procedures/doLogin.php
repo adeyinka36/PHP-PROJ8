@@ -20,16 +20,24 @@ if(empty($user)){
 if(password_verify($password,$user["password"])){
    
    
-    $session->set("auth-loggedin",true);
-    $session->set("auth-username",$user["username"]);
-    $session->set("auth-userid",(int) $user["user_id"]);
     
-    redirect($host.'/');
- 
+    $data=[
+        "auth-username"=>$user["username"],
+        "auth-userid"=>$user["user_id"]
+    ];
 
-    $session->getFlashBag()->add("Success","You are now logged in");
+
     
+    $time= time()+36000;
+    $cookie= createCookie(json_encode($data),$time);
 
+   
+
+
+
+    $session->getFlashBag()->add("success","You are now logged in");
+    
+    redirect($host.'/',["cookies"=>[$cookie]]);
 }
 else{
     $session->getFlashBag()->add("error","Incorrect credentials");

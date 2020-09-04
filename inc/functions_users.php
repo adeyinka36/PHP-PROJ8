@@ -55,7 +55,7 @@ function changePassword($currentPassword,$newPassword){
     global $db;
     global $host;
 
-    $username= $session->get("auth-username");
+    $username= revealCookies("auth-username");
     $new=password_hash($newPassword,PASSWORD_DEFAULT);
 
     try{
@@ -103,6 +103,34 @@ function checkAuth(){
 
     global $session;
 
-   return  $session->get("auth-userid",false);
+   $val= revealCookies("auth-userid");
+   return $val;
+}
 
+
+function createCookie($data,$expiraton){
+
+    $cookie= new \Symfony\Component\HttpFoundation\Cookie(
+        "auth",
+        $data,
+        $expiraton,
+        "/",
+        "localhost",
+        false,
+        true
+    );
+    return $cookie;
+}
+
+
+function revealCookies($prop=null){
+    
+    $cookie=json_decode(request()->cookies->get("auth"));
+    if(!$prop){
+    return $cookie;
+    }
+    if(!isset($cookie->$prop)){
+        return false;
+    }
+    return $cookie->$prop;
 }
