@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/functions_tasks.php';
 require_once __DIR__ . '/functions_users.php';
@@ -6,7 +7,7 @@ require_once __DIR__ . '/auth.php';
 
 
 
-$dotenv = Dotenv\Dotenv::create(__DIR__); //New version as of date
+ $dotenv = new Dotenv\Dotenv(__DIR__);
 $dotenv->load();
 
 

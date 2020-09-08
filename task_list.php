@@ -1,9 +1,13 @@
 <?php
 require 'inc/bootstrap.php';
 
+$env=  getenv('SECRET_JWT');
+$secret= revealCookies("auth-userid",$env);
 
 
-$authenticated=checkAuth();
+
+
+$authenticated=checkAuth($env);
 if(!$authenticated){
     redirect('login.php');
 }
@@ -15,12 +19,12 @@ $page = "tasks";
 
 $filter = request()->get('filter');
 if ($filter=='all') {
-    $tasks = getTasks();
+    $tasks = getTasks(null,$secret);
 } elseif ($filter=='complete') {
-    $tasks = getCompleteTasks();
+    $tasks = getCompleteTasks($secret);
 } else {
     $filter = 'incomplete';
-    $tasks = getIncompleteTasks();
+    $tasks = getIncompleteTasks($secret);
 }
 
 include 'inc/header.php';

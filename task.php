@@ -2,10 +2,11 @@
 require_once 'inc/bootstrap.php';
 
 
+$env=getenv('SECRET_JWT');
 
 
-$authenticated=checkAuth();
-if(!$authenticatedauthenti){
+$authenticated=checkAuth($env);
+if(!$authenticated){
     redirect('login.php');
 }
 

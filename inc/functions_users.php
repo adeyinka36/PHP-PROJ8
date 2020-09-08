@@ -1,5 +1,6 @@
 <?php
 
+require_once 'bootstrap.php';
 $host=getenv("APP_URL");
 
 function createUser($username,$password){
@@ -50,12 +51,12 @@ function findUserByUsername($username){
 
 
 
-function changePassword($currentPassword,$newPassword){
+function changePassword($currentPassword,$newPassword,$uname){
     global $session;
     global $db;
     global $host;
 
-    $username= revealCookies("auth-username");
+    $username= revealCookies("auth-username",$uname);
     
     $new=password_hash($newPassword,PASSWORD_DEFAULT);
 
@@ -66,8 +67,7 @@ function changePassword($currentPassword,$newPassword){
        $result=$stmt->fetch();
        $oldPassword=$result["password"];
        if(!password_verify($currentPassword,$oldPassword)){
-           var_dump($username);
-           die();
+          
         redirect($host."/account.php");
        
         $session->addFlashBag()->add("error","Incorrect Password");
@@ -102,11 +102,11 @@ function changePassword($currentPassword,$newPassword){
     return true;
 }
 
-function checkAuth(){
+function checkAuth($sec){
 
     global $session;
 
-   $val= revealCookies("auth-userid");
+   $val= revealCookies("auth-userid",$sec);
    return $val;
 }
 
@@ -126,16 +126,19 @@ function createCookie($data,$expiraton){
 }
 
 
-function revealCookies($prop=null){
+function revealCookies($prop=null,$secret){
+     
     Firebase\JWT\JWT::$leeway=1;
     try{
     $cookie= Firebase\JWT\JWT::decode(
         request()->cookies->get("auth"),
-        getenv("SECRET_JWT"),
+     $secret,
         ["HS256"]
     );
 }catch(Exception $e){
+    echo $e->getMessage();
     return false;
+  
 }
     if(!$prop){
     return $cookie;

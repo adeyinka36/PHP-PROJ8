@@ -1,7 +1,7 @@
 <?php
 
 require_once '../bootstrap.php';
-
+$sec= getenv("SECRET_JWT");
 $host=getenv("APP_URL");
 
 $password=request()->get("current_password");
@@ -15,7 +15,7 @@ if($newPassword!=$confirmPassword){
     return false;
 }
 
-changePassword($password,$newPassword);
+changePassword($password,$newPassword,$sec);
 
 
 

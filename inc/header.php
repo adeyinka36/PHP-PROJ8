@@ -1,6 +1,7 @@
 <html>
 <head>
 	<title><?php echo $pageTitle; ?></title>
+  
   <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
   <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,700' rel='stylesheet' type='text/css'>
@@ -47,7 +48,8 @@
 
   <?php 
   require_once 'bootstrap.php';
-  $authenticated=checkAuth();
+   $secret=  getenv('SECRET_JWT');
+  $authenticated=checkAuth($secret);
   
   ?>
     <div class="col-container">

@@ -1,12 +1,20 @@
 <?php
 //task functions
 
+require_once 'functions_users.php';
 
 
-function getTasks($where = null)
+
+
+
+
+function getTasks($where = null,$creator=null)
+
 {
+    
+   
     global $session;
-    $creator=$session->get("auth-userid");
+    
     if($creator){
     global $db;
     $query = "SELECT * FROM tasks ";
@@ -45,13 +53,13 @@ else{
     return $tasks;
 }
 }
-function getIncompleteTasks()
+function getIncompleteTasks($id)
 {
-    return getTasks('status=0');
+    return getTasks('status=0',$id);
 }
-function getCompleteTasks()
+function getCompleteTasks($id)
 {
-    return getTasks('status=1');
+    return getTasks('status=1',$id);
 }
 function getTask($task_id)
 {
@@ -68,11 +76,11 @@ function getTask($task_id)
     }
     return $task;
 }
-function createTask($data)
+function createTask($data,$id)
 {
     global $session;
     global $db;
-    $user_id= $session->get('auth-userid',false);
+    $user_id= revealCookies('auth-userid',$id);
    
     try {
         $statement = $db->prepare('INSERT INTO tasks (task, status, user_id) VALUES (:task, :status, :user)');
@@ -89,12 +97,12 @@ function createTask($data)
    
     return getTask($db->lastInsertId());
 }
-function updateTask($data)
+function updateTask($data,$id)
 {
     global $db;
 
     try {
-        getTask($data['task_id']);
+        getTask($data['task_id'],$id);
         $statement = $db->prepare('UPDATE tasks SET task=:task, status=:status WHERE id=:id');
         $statement->bindParam('task', $data['task']);
         $statement->bindParam('status', $data['status']);
@@ -104,14 +112,14 @@ function updateTask($data)
         echo "Error!: " . $e->getMessage() . "<br />";
         return false;
     }
-    return getTask($data['task_id']);
+    return getTask($data['task_id'],$id);
 }
-function updateStatus($data)
+function updateStatus($data,$id)
 {
     global $db;
 
     try {
-        getTask($data['task_id']);
+        //getTask($data['task_id'],$id);
         $statement = $db->prepare('UPDATE tasks SET status=:status WHERE id=:id');
         $statement->bindParam('status', $data['status']);
         $statement->bindParam('id', $data['task_id']);
@@ -120,14 +128,14 @@ function updateStatus($data)
         echo "Error!: " . $e->getMessage() . "<br />";
         return false;
     }
-    return getTask($data['task_id']);
+    return getTask($data['task_id'],$id);
 }
-function deleteTask($task_id)
+function deleteTask($task_id,$id)
 {
     global $db;
 
     try {
-        getTask($task_id);
+        getTask($task_id,$id);
         $statement = $db->prepare('DELETE FROM tasks WHERE id=:id');
         $statement->bindParam('id', $task_id);
         $statement->execute();

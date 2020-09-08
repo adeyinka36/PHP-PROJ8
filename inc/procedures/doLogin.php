@@ -1,8 +1,11 @@
 <?php
 
 require_once '../bootstrap.php';
- 
+
+
 $host=getenv("APP_URL");
+$sec= getenv("SECRET_JWT");
+
 
 
 $username= request()->get('username');
@@ -37,8 +40,10 @@ if(password_verify($password,$user["password"])){
     // $time= time()+36000;
     $cookie= createCookie($jwt,$time);
 
-   
+    $creator=revealCookies("auth",$sec);
 
+   
+   
 
 
     $session->getFlashBag()->add("success","You are now logged in");
