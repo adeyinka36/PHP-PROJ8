@@ -30,10 +30,7 @@ if(password_verify($password,$user["password"])){
     ],
     getenv("SECRET_JWT"),
     "HS256");
-    // $data=[
-    //     "auth-username"=>$user["username"],
-    //     "auth-userid"=>$user["user_id"]
-    // ];
+
 
 
     
