@@ -46,12 +46,12 @@
 
 	<header class="header">
 
-  <?php 
+  <span style="visibility:hidden;"><?php 
   require_once 'bootstrap.php';
    $secret=  getenv('SECRET_JWT');
   $authenticated=checkAuth($secret);
   
-  ?>
+  ?></span>
     <div class="col-container">
   		<h1>
         <a class="logo" href=<?php echo getenv('APP_URL')."./"?>>>
